@@ -8,7 +8,7 @@ API_HASH = os.environ.get("API_HASH")
 STRING = os.environ.get("STRING")
 CHAT_ID = int(os.environ.get("CHAT_ID"))
 
-FOLDER_LINK = "https://drive.google.com/drive/folders/14pY4V62ImG6g6XpkPFD2Y6IJDX9SlNKM?usp=drive_link"
+FOLDER_LINK = "https://drive.google.com/drive/folders/16lFzZGq9s-4ExvK72-8Y9-FUgbcPBG38?usp=drive_link"
 
 async def main():
     if not os.path.exists("sent.txt"):
