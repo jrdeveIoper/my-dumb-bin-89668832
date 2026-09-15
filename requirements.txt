@@ -1,2 +1,2 @@
-gdown--upgrade
 telethon
+gdown
