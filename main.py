@@ -17,7 +17,7 @@ async def main():
 
     print("Downloading folder...")
     try:
-        gdown.download_folder(url=FOLDER_LINK, quiet=False, use_cookies=False, remaining_ok=True)
+        gdown.download_folder(url=FOLDER_LINK, quiet=False, use_cookies=False)
     except Exception as e:
         print(f"Download me kuch files fail hui, but chalta hai: {e}")
 
