@@ -7,33 +7,34 @@ API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")
 STRING = os.environ.get("STRING")
 CHAT_ID = int(os.environ.get("CHAT_ID"))
+
 FOLDER_LINK = "https://drive.google.com/drive/folders/14pY4V62ImG6g6XpkPFD2Y6IJDX9SlNKM?usp=drive_link"
 
 async def main():
-    sent = open("sent.txt").read().splitlines() if os.path.exists("sent.txt") else []
-    sent = set(sent)
+    if not os.path.exists("sent.txt"):
+        open("sent.txt","w").close()
+    sent = set(open("sent.txt").read().splitlines())
 
-    # Folder list karo, download ek-ek karke, fail hua toh skip
+    print("Downloading folder...")
     try:
-        gdown.download_folder(url=FOLDER_LINK, quiet=True, use_cookies=False)
-    except:
-        pass # error ko ignore kar
+        gdown.download_folder(url=FOLDER_LINK, quiet=False, use_cookies=False, remaining_ok=True)
+    except Exception as e:
+        print(f"Download me kuch files fail hui, but chalta hai: {e}")
 
-    all_files = glob.glob("Tg/**/*", recursive=True)
-
+    files = glob.glob("**/*", recursive=True)
+    
     async with TelegramClient(StringSession(STRING), API_ID, API_HASH) as client:
-        for path in all_files:
-            if not os.path.isfile(path): continue
-            name = os.path.basename(path)
-            if name in sent: continue
-            if os.path.getsize(path) < 1000: continue # khali file skip
-
+        for f in files:
+            if not os.path.isfile(f): continue
+            if "my-dumb-bin" in f or f in ["main.py","requirements.txt","sent.txt"]: continue
+            name = os.path.basename(f)
+            if name in sent or os.path.getsize(f) < 500: continue
+            
             try:
-                await client.send_file(CHAT_ID, path, caption=name)
+                print(f"Sending {name}")
+                await client.send_file(CHAT_ID, f, caption=name)
                 open("sent.txt","a").write(name+"\n")
-                print(f"Done {name}")
             except Exception as e:
-                print(f"Skip {name}: {e}")
-                continue
+                print(f"Failed {name}: {e}")
 
 asyncio.run(main())
